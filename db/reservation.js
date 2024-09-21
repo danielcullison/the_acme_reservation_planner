@@ -1,12 +1,20 @@
 const client = require("./client.js");
 
-const createReservation = async (reservationDate, partyCount, restaurantId, customerId) => {
+const createReservation = async (
+  reservationDate,
+  partyCount,
+  restaurantId,
+  customerId
+) => {
   try {
-    const { rows } = await client.query(`
+    const { rows } = await client.query(
+      `
             INSERT INTO reservation (date, party_count, restaurant_id, customer_id)
-            VALUES ('${reservationDate}', ${partyCount},'${restaurantId}', '${customerId}')
+            VALUES ($1, $2, $3, $4)
             RETURNING *;
-        `);
+        `,
+      [reservationDate, partyCount, restaurantId, customerId]
+    );
     const reservation = rows[0];
     return reservation;
   } catch (err) {
@@ -16,12 +24,12 @@ const createReservation = async (reservationDate, partyCount, restaurantId, cust
 
 const fetchReservations = async () => {
   try {
-   const { rows } =  await client.query(`
+    const { rows } = await client.query(`
       SELECT * FROM reservation;
     `);
     return rows;
   } catch (err) {
-    console.log('ERROR FETCHING RESERVATIONS: ', err);
+    console.log("ERROR FETCHING RESERVATIONS: ", err);
   }
 };
 

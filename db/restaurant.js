@@ -2,11 +2,14 @@ const client = require("./client.js");
 
 const createRestaurant = async (restaurantName) => {
   try {
-    const { rows } = await client.query(`
+    const { rows } = await client.query(
+      `
             INSERT INTO restaurant (name)
-            VALUES ('${restaurantName}')
+            VALUES ($1)
             RETURNING *;
-        `);
+        `,
+      [restaurantName]
+    );
     const restaurant = rows[0];
     return restaurant;
   } catch (err) {
@@ -16,12 +19,12 @@ const createRestaurant = async (restaurantName) => {
 
 const fetchRestaurants = async () => {
   try {
-   const { rows } =  await client.query(`
+    const { rows } = await client.query(`
       SELECT * FROM restaurant;
     `);
     return rows;
   } catch (err) {
-    console.log('ERROR FETCHING RESTAURANTS: ', err);
+    console.log("ERROR FETCHING RESTAURANTS: ", err);
   }
 };
 
